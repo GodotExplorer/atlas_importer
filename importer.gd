@@ -7,6 +7,7 @@ onready var dialog = get_node("Dialog")
 onready var listbox = dialog.get_node("Preview/Background/ScrollContainer/VBox")
 var fileDialog = FileDialog.new()
 var atlas = AtlasParser.new()
+var tex = null
 
 func _ready():
 	fileDialog.connect("file_selected", self, "_metaFileSelected")
@@ -20,11 +21,11 @@ func _ready():
 	dialog.get_node("Input/Source/MetaFileField").connect("text_changed", self, "_checkPath")
 	dialog.get_node("Input/Type/TypeButton").connect("item_selected", self, "_typeSelected")
 	dialog.get_node("Input/Type/TypeButton").select(0)
-	dialog.show()
-
 	dialog.get_node("Preview/SelAll").connect("pressed", self, "_toggleAll")
 	dialog.get_node("Preview/Clear").connect("pressed", self, "_untoggleAll")
 	dialog.get_node("Preview/Inverse").connect("pressed", self, "_toggleInverse")
+	dialog.connect("confirmed", self, "_import")
+	dialog.show()
 
 func _selectMetaFile():
 	fileDialog.clear_filters()
@@ -69,6 +70,13 @@ func _getParentDir(path):
 	var fileName = path.substr(0, path.find_last("/"))
 	return fileName
 
+func _getFileName(path):
+	var fileName = path.substr(path.find_last("/")+1, path.length() - path.find_last("/")-1)
+	var dotPos = fileName.find_last(".")
+	if dotPos != -1:
+		fileName = fileName.substr(0,dotPos)
+	return fileName
+
 func _metaFileSelected(path):
 	dialog.get_node("Input/Source/MetaFileField").set_text(path)
 	_checkPath("")
@@ -82,6 +90,7 @@ func _typeSelected(id):
 
 func _checkPath(path):
 	var passed = true
+	tex = null
 	for c in listbox.get_children():
 		listbox.remove_child(c)
 	listbox.update()
@@ -102,11 +111,12 @@ func _checkPath(path):
 		passed = false
 	if passed:
 		dialog.get_node("Status").set_text("")
+	return passed
 
 func _updatePreview(path):
 	atlas.loadFromFile(path, dialog.get_node("Input/Type/TypeButton").get_selected_ID())
 	var inputDir = _getParentDir(path)
-	var tex = load(str(inputDir, "/", atlas.imagePath))
+	tex = load(str(inputDir, "/", atlas.imagePath))
 	for i in range(atlas.sprites.size()):
 		var item = FrameItem.instance()
 		listbox.add_child(item)
@@ -114,3 +124,23 @@ func _updatePreview(path):
 		item.frame_meta = atlas.sprites[i]
 		item.set_custom_minimum_size(Vector2(0, 80))
 	return atlas.sprites.size() > 0
+
+func _import():
+	if listbox.get_child_count() > 0:
+		var selectedAtlasIndex = []
+		for i in range(listbox.get_child_count()):
+			if listbox.get_child(i).selected:
+				selectedAtlasIndex.append(i)
+		# save files
+		if tex != null:
+			var tardir = dialog.get_node("Input/Target/TargetDirField").get_text()
+			var texPath = str(tardir, "/", _getFileName(dialog.get_node("Input/Source/MetaFileField").get_text()), ".tex")
+			ResourceSaver.save(texPath, tex)
+			for i in selectedAtlasIndex:
+				var atla = atlas.sprites[i]
+				var atex = AtlasTexture.new()
+				atex.set_atlas(tex)
+				atex.set_region(atla.region)
+				ResourceSaver.save(str(tardir,"/", _getFileName(atla.name),".atex"), atex)
+				
+		
