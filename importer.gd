@@ -89,34 +89,40 @@ func _typeSelected(id):
 	_checkPath("")
 
 func _checkPath(path):
-	var passed = true
+	# Clear preview list
 	tex = null
 	for c in listbox.get_children():
 		listbox.remove_child(c)
 	listbox.update()
-
+	
+	# Check input file
 	var file = File.new()
-	if not file.file_exists(dialog.get_node("Input/Target/TargetDirField").get_text()):
-		dialog.get_node("Status").set_text("Target directory does not exists")
-		passed = false
-
 	var inpath = dialog.get_node("Input/Source/MetaFileField").get_text()
-	var source_exists = file.file_exists(inpath)
-	if source_exists:
+	if file.file_exists(inpath):
+		# Load atlas meta and texture
+		atlas.loadFromFile(path, dialog.get_node("Input/Type/TypeButton").get_selected_ID())
+		tex = load(str(_getParentDir(path), "/", atlas.imagePath))
 		if not _updatePreview(inpath):
 			dialog.get_node("Status").set_text("No frame found")
-			passed = false
+			return false
 	else:
 		dialog.get_node("Status").set_text("Source meta file does not exists")
-		passed = false
-	if passed:
-		dialog.get_node("Status").set_text("")
-	return passed
+		return false
+	
+	# Check output directory
+	var tarDir = dialog.get_node("Input/Target/TargetDirField").get_text()
+	if tarDir.substr(0, "res://".length()) != "res://":
+		dialog.get_node("Status").set_text("Target directory must under res://")
+		return false
+	var dir = Directory.new()
+	if not dir.open(tarDir) == OK:
+		dialog.get_node("Status").set_text("Target directory does not exists")
+		return false
+	# Check passed
+	dialog.get_node("Status").set_text("")
+	return true
 
 func _updatePreview(path):
-	atlas.loadFromFile(path, dialog.get_node("Input/Type/TypeButton").get_selected_ID())
-	var inputDir = _getParentDir(path)
-	tex = load(str(inputDir, "/", atlas.imagePath))
 	for i in range(atlas.sprites.size()):
 		var item = FrameItem.instance()
 		listbox.add_child(item)
@@ -131,7 +137,7 @@ func _import():
 		for i in range(listbox.get_child_count()):
 			if listbox.get_child(i).selected:
 				selectedAtlasIndex.append(i)
-		# save files
+		# Save files
 		if tex != null:
 			var tardir = dialog.get_node("Input/Target/TargetDirField").get_text()
 			var texPath = str(tardir, "/", _getFileName(dialog.get_node("Input/Source/MetaFileField").get_text()), ".tex")

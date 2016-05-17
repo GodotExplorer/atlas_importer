@@ -75,10 +75,6 @@ margin/left = 10.0
 margin/top = 5.5
 margin/right = 53.0
 margin/bottom = -25.5
-text = "/home/geequlim/Desktop/abc/atlas.xml"
-max_length = 0
-editable = true
-secret = false
 
 [node name="Browse" type="Button" parent="Dialog/Input/Source"]
 
@@ -140,10 +136,6 @@ margin/left = 10.0
 margin/top = 5.5
 margin/right = 53.0
 margin/bottom = -25.5
-text = ""
-max_length = 0
-editable = true
-secret = false
 
 [node name="Browse" type="Button" parent="Dialog/Input/Target"]
 
@@ -296,10 +288,10 @@ focus/ignore_mouse = false
 focus/stop_mouse = false
 size_flags/horizontal = 3
 size_flags/vertical = 3
-margin/left = 5.0
-margin/top = 4.0
-margin/right = 295.0
-margin/bottom = 304.0
+margin/left = 0.0
+margin/top = -0.0
+margin/right = 311.0
+margin/bottom = 300.0
 alignment = 0
 
 [node name="SelAll" type="Button" parent="Dialog/Preview"]
