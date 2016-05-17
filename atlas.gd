@@ -1,3 +1,4 @@
+tool
 extends Reference
 
 const FORMAT_TEXTURE_PACKER_XML  = 0

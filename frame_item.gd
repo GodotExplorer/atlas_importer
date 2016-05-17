@@ -1,4 +1,4 @@
-
+tool
 extends Panel
 
 func _set_title(text):
@@ -19,7 +19,7 @@ func _setTexture(tex):
 
 func invalidate():
 	if frame_meta != null:
-		print( inst2dict(frame_meta))
+		# print( inst2dict(frame_meta))
 		self.title = frame_meta.name
 		if texture != null:
 			_set_icon(texture, frame_meta.region, frame_meta.rotation)
