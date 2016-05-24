@@ -13,10 +13,10 @@ focus/ignore_mouse = false
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = 268.5
-margin/top = 178.5
-margin/right = 1011.5
-margin/bottom = 621.5
+margin/left = 140.5
+margin/top = 78.5
+margin/right = 883.5
+margin/bottom = 521.5
 popup/exclusive = false
 window/title = "Import 2D Atlas"
 dialog/hide_on_ok = false
@@ -341,5 +341,24 @@ toggle_mode = true
 click_on_press = true
 text = "Inverse"
 flat = false
+
+[node name="Alter" type="AcceptDialog" parent="Dialog"]
+
+visibility/visible = false
+anchor/left = 3
+anchor/top = 3
+anchor/right = 3
+anchor/bottom = 3
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 205.5
+margin/top = 65.5
+margin/right = -249.5
+margin/bottom = -10.5
+popup/exclusive = false
+window/title = "Alert!"
+dialog/hide_on_ok = true
 
 

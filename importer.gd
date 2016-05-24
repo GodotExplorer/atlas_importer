@@ -77,7 +77,10 @@ func _selectTargetFile():
 	fileDialog.add_filter("*.res")
 	fileDialog.set_mode(FileDialog.MODE_SAVE_FILE)
 	fileDialog.set_access(FileDialog.ACCESS_RESOURCES)
-	fileDialog.set_current_file(".tex")
+	var resetname = _getFileName(dialog.get_node("Input/Source/MetaFileField").get_text())
+	if resetname == null:
+		resetname = ""
+	fileDialog.set_current_file(str(resetname,".tex"))
 	_showFileDialog()
 
 func _fileSelected(path):
@@ -149,6 +152,7 @@ func import(path, meta):
 	var atlas = _loadAtlas(meta.get_source_path(0), meta.get_option("format"))
 	var tex = _loadAtlasTex(meta.get_source_path(0), atlas)
 	tex.set_import_metadata(meta)
+	tex.set_path(path)
 	ResourceSaver.save(path, tex)
 	
 	var tarDir = _getParentDir(path)
@@ -159,10 +163,12 @@ func import(path, meta):
 			var atex = AtlasTexture.new()
 			atex.set_atlas(tex)
 			atex.set_region(s.region)
-			ResourceSaver.save(str(tarDir, "/", _getFileName(s.name),".atex"), atex)
+			var ap = str(tarDir, "/", _getFileName(path), ".", _getFileName(s.name),".atex")
+			ResourceSaver.save(ap, atex)
 
 func _confirmed():
-	if dialog.get_node("Status").get_text() == "":
+	var err = dialog.get_node("Status").get_text()
+	if err == "":
 		var inpath = dialog.get_node("Input/Source/MetaFileField").get_text()
 		var outpath = dialog.get_node("Input/Target/TargetDirField").get_text()
 		var meta = ResourceImportMetadata.new()
@@ -181,6 +187,9 @@ func _confirmed():
 		
 		emit_signal("confim_import", outpath, meta)
 		dialog.hide()
+	else:
+		dialog.get_node("Alter").set_text(err)
+		dialog.get_node("Alter").popup()
 
 func showDialog(from):
 	var meta = null
