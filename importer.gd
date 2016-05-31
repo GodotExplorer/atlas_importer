@@ -135,7 +135,14 @@ func _loadAtlas(metaPath, format):
 	return atlas
 
 func _loadAtlasTex(metaPath, atlas):
-	return load(str(_getParentDir(metaPath), "/", atlas.imagePath))
+	var path = str(_getParentDir(metaPath), "/", atlas.imagePath)
+	var tex = null
+	if ResourceLoader.has(path):
+		tex = ResourceLoader.load(path)
+	else:
+		tex = ImageTexture.new()
+	tex.load(path)
+	return tex
 
 func _updatePreview(path):
 	var atlas = _loadAtlas(path, get_node("Dialog/Input/Type/TypeButton").get_selected_ID())
@@ -149,21 +156,45 @@ func _updatePreview(path):
 	return atlas.sprites.size() > 0
 
 func import(path, meta):
-	var atlas = _loadAtlas(meta.get_source_path(0), meta.get_option("format"))
-	var tex = _loadAtlasTex(meta.get_source_path(0), atlas)
+	var srcfile = meta.get_source_path(0)
+	var atlas = _loadAtlas(srcfile, meta.get_option("format"))
+	var tex = _loadAtlasTex(srcfile, atlas)
+	meta.set_source_md5(0, File.new().get_md5(srcfile))
 	tex.set_import_metadata(meta)
-	tex.set_path(path)
+	if not ResourceLoader.has(path):
+		tex.set_path(path)
+	else:
+		tex.take_over_path(path)
+	tex.set_name(path)
 	ResourceSaver.save(path, tex)
 	
 	var tarDir = _getParentDir(path)
 	var sprites = meta.get_option("sprites")
 	
+	# Remove exsits atexs
+	var dir = Directory.new()
+	if dir.open(tarDir) == OK:
+		dir.list_dir_begin()
+		var f = dir.get_next()
+		while f.length():
+			print(f)
+			if f.begins_with(str(_getFileName(path), ".")) and f.ends_with(".atex") and dir.file_exists(f):
+				dir.remove(f)
+				print("remove: ",f)
+			f = dir.get_next()
+	
 	for s in atlas.sprites:
 		if sprites.find(s.name) != -1:
 			var atex = AtlasTexture.new()
+			var ap = str(tarDir, "/", _getFileName(path), ".", _getFileName(s.name),".atex")
+			if not ResourceLoader.has(ap):
+				atex.set_path(ap)
+			else:
+				atex.take_over_path(ap)
+			atex.set_path(ap)
+			atex.set_name(_getFileName(s.name))
 			atex.set_atlas(tex)
 			atex.set_region(s.region)
-			var ap = str(tarDir, "/", _getFileName(path), ".", _getFileName(s.name),".atex")
 			ResourceSaver.save(ap, atex)
 
 func _confirmed():
@@ -173,7 +204,7 @@ func _confirmed():
 		var outpath = dialog.get_node("Input/Target/TargetDirField").get_text()
 		var meta = ResourceImportMetadata.new()
 		meta.set_editor("com.geequlim.gdplugin.atlas.importer")
-		meta.add_source(inpath, File.new().get_md5(inpath))
+		meta.add_source(inpath)
 		meta.set_option("format", dialog.get_node("Input/Type/TypeButton").get_selected_ID())
 		meta.set_option("selectIndex", dialog.get_node("Input/Type/TypeButton").get_selected())
 		

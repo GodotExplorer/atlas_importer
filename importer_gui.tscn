@@ -20,6 +20,7 @@ margin/bottom = 521.5
 popup/exclusive = false
 window/title = "Import 2D Atlas"
 dialog/hide_on_ok = false
+__meta__ = { "_edit_group_":true, "_edit_lock_":true }
 
 [node name="Input" type="Control" parent="Dialog"]
 
