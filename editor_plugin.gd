@@ -3,16 +3,13 @@ tool
 extends EditorPlugin
 
 var importerPlugin = null
-onready var importer = preload("./importer_gui.tscn").instance()
+var importer = preload("./importer_gui.tscn")
 
-func _init():
-	pass
-	
-func _ready():
-	add_child(importer)
-	importer.connect("confim_import", self, "_rowImport")
-	
 func _enter_tree():
+	importer = importer.instance()
+	get_base_control().add_child(importer)
+	importer.connect("confim_import", self, "_rowImport")
+
 	importerPlugin = ImportPlugin.new()
 	importerPlugin.connect("show_import_dialog", self, "_showDialog")
 	importerPlugin.connect("import_atlas", self, "_importAtlas")
@@ -36,16 +33,15 @@ func _rowImport(path, meta):
 class ImportPlugin extends EditorImportPlugin:
 	signal show_import_dialog(from)
 	signal import_atlas(path, from)
-	
+
 	func get_name():
 		return "com.geequlim.gdplugin.atlas.importer"
-		
+
 	func get_visible_name():
 		return "2D Atals from other tools"
-		
+
 	func import_dialog(from):
 		emit_signal("show_import_dialog",from)
-	
+
 	func import(path, from):
 		emit_signal("import_atlas", path, from)
-		

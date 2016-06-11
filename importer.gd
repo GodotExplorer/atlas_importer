@@ -1,5 +1,5 @@
 tool
-extends Node2D
+extends Control
 
 
 var AtlasParser = preload("atlas.gd")
