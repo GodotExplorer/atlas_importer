@@ -62,9 +62,10 @@ func _showFileDialog():
 func _selectMetaFile():
 	current_dialog = SEL_INPUT_META
 	fileDialog.clear_filters()
-	if dialog.get_node("Input/Type/TypeButton").get_selected_ID() == 0:
+	var curtype = dialog.get_node("Input/Type/TypeButton").get_selected_ID()
+	if curtype in [AtlasParser.FORMAT_TEXTURE_PACKER_XML, AtlasParser.FORMAT_KENNEY_SPRITESHEET]:
 		fileDialog.add_filter("*.xml")
-	else:
+	elif curtype in [AtlasParser.FORMAT_TEXTURE_JSON, AtlasParser.FORMAT_ATTILA_JSON]:
 		fileDialog.add_filter("*.json")
 	fileDialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 	fileDialog.set_mode(FileDialog.MODE_OPEN_FILE)

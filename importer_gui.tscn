@@ -20,10 +20,10 @@ focus/ignore_mouse = false
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = 132.5
-margin/top = 69.5
-margin/right = 891.5
-margin/bottom = 530.5
+margin/left = 132.0
+margin/top = 69.0
+margin/right = 891.0
+margin/bottom = 530.0
 popup/exclusive = false
 window/title = "Import 2D Atlas"
 dialog/hide_on_ok = false
@@ -39,7 +39,6 @@ margin/left = 0.0
 margin/top = 0.0
 margin/right = 425.0
 margin/bottom = 86.0
-__meta__ = { "_editor_collapsed":true }
 
 [node name="Source" type="Control" parent="Dialog/Input"]
 
@@ -52,7 +51,6 @@ margin/left = 10.0
 margin/top = 20.0
 margin/right = 10.0
 margin/bottom = 81.0
-__meta__ = { "_editor_collapsed":true }
 
 [node name="Label" type="Label" parent="Dialog/Input/Source"]
 
@@ -60,6 +58,7 @@ anchor/right = 1
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
+size_flags/vertical = 0
 margin/left = 10.0
 margin/top = -6.0
 margin/right = 7.0
@@ -83,7 +82,11 @@ margin/left = 10.0
 margin/top = 5.5
 margin/right = 53.0
 margin/bottom = -25.5
+placeholder/alpha = 0.6
+expand_to_len = false
 focus_mode = 2
+caret/caret_blink = false
+caret/caret_blink_speed = 0.65
 
 [node name="Browse" type="Button" parent="Dialog/Input/Source"]
 
@@ -107,6 +110,7 @@ flat = false
 
 [node name="Target" type="Control" parent="Dialog/Input"]
 
+editor/display_folded = true
 anchor/right = 1
 focus/ignore_mouse = false
 focus/stop_mouse = true
@@ -116,7 +120,6 @@ margin/left = 10.0
 margin/top = 90.0
 margin/right = 10.0
 margin/bottom = 151.0
-__meta__ = { "_editor_collapsed":true }
 
 [node name="Label" type="Label" parent="Dialog/Input/Target"]
 
@@ -124,6 +127,7 @@ anchor/right = 1
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
+size_flags/vertical = 0
 margin/left = 10.0
 margin/top = -6.0
 margin/right = 7.0
@@ -147,7 +151,11 @@ margin/left = 10.0
 margin/top = 5.5
 margin/right = 53.0
 margin/bottom = -25.5
+placeholder/alpha = 0.6
+expand_to_len = false
 focus_mode = 2
+caret/caret_blink = false
+caret/caret_blink_speed = 0.65
 
 [node name="Browse" type="Button" parent="Dialog/Input/Target"]
 
@@ -180,7 +188,6 @@ margin/left = 12.0
 margin/top = 156.0
 margin/right = 11.0
 margin/bottom = 196.0
-__meta__ = { "_editor_collapsed":true }
 
 [node name="Label" type="Label" parent="Dialog/Input/Type"]
 
@@ -189,6 +196,7 @@ anchor/bottom = 3
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
+size_flags/vertical = 0
 margin/left = 10.0
 margin/top = 15.0
 margin/right = 168.0
@@ -217,7 +225,7 @@ text = "Attila"
 flat = false
 align = 0
 selected = 0
-items = [ "Attila", null, false, 2, null, "TexturePacker - Generic XML", null, false, 0, null, "TexturePacker - JSON HASH", null, false, 1, null ]
+items = [ "Attila", null, false, 2, null, "TexturePacker - Generic XML", null, false, 0, null, "TexturePacker - JSON HASH", null, false, 1, null, "Kenney Spritesheet", null, false, 3, null ]
 
 [node name="Status" type="Label" parent="Dialog"]
 
@@ -227,6 +235,7 @@ anchor/bottom = 1
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
+size_flags/vertical = 0
 margin/left = 19.0
 margin/top = 69.0
 margin/right = 15.0
@@ -241,6 +250,7 @@ max_lines_visible = -1
 
 [node name="Preview" type="Control" parent="Dialog"]
 
+editor/display_folded = true
 anchor/left = 1
 anchor/right = 1
 anchor/bottom = 1
@@ -259,6 +269,7 @@ anchor/right = 1
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
+size_flags/vertical = 0
 margin/left = -31.0
 margin/top = 14.0
 margin/right = 232.0
@@ -323,6 +334,7 @@ flat = false
 
 [node name="Background" type="Panel" parent="Dialog/Preview"]
 
+editor/display_folded = true
 rect/min_size = Vector2( 300, 300 )
 focus/ignore_mouse = false
 focus/stop_mouse = true
@@ -332,7 +344,7 @@ margin/left = -10.0
 margin/top = 46.0
 margin/right = 290.0
 margin/bottom = 366.0
-__meta__ = { "_edit_group_":true, "_editor_collapsed":true }
+__meta__ = { "_edit_group_":true }
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Dialog/Preview/Background"]
 
@@ -358,7 +370,7 @@ focus/stop_mouse = false
 size_flags/horizontal = 3
 size_flags/vertical = 3
 margin/left = 0.0
-margin/top = -0.0
+margin/top = 0.0
 margin/right = 311.0
 margin/bottom = 300.0
 alignment = 0

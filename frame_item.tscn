@@ -52,7 +52,6 @@ margin/left = 0.0
 margin/top = 0.0
 margin/right = 267.0
 margin/bottom = 80.0
-__meta__ = { "_editor_collapsed":true }
 
 [node name="Sprite" type="Sprite" parent="HBox/Icon"]
 
@@ -63,10 +62,11 @@ transform/pos = Vector2( 40, 40 )
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 3
+size_flags/vertical = 0
 margin/left = 271.0
 margin/top = 33.0
 margin/right = 538.0
-margin/bottom = 46.0
+margin/bottom = 47.0
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1

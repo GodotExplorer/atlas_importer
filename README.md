@@ -6,5 +6,6 @@ Load packed atlas texture to filesystem and can be used in godot.
 - TexturePacker : Generic XML
 - TexturePacker : JSON hash
 - [Attila](https://github.com/r-lyeh/attila) : JSON
+- Kenney Spritesheet : Atlas from [Kenney assets](http://kenney.nl/assets)
 
 As godot doesn't support rotated atlas, so don't rotate sprites when you pack pictures with above tools or you have to rotate them back manually.

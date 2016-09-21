@@ -4,6 +4,7 @@ extends Reference
 const FORMAT_TEXTURE_PACKER_XML  = 0
 const FORMAT_TEXTURE_JSON = 1
 const FORMAT_ATTILA_JSON = 2
+const FORMAT_KENNEY_SPRITESHEET = 3
 
 var imagePath = ""
 var width = 0
@@ -36,6 +37,8 @@ func parse(fileContent, format):
 		atlas = _parseTexturePackerJson(fileContent)
 	elif format == FORMAT_ATTILA_JSON:
 		atlas = _parseAttilaJson(fileContent)
+	elif format == FORMAT_KENNEY_SPRITESHEET:
+		atlas = _parseKenneySpritsheet(fileContent)
 	if atlas != null:
 		if atlas.has("imagePath"):
 			self.imagePath = atlas["imagePath"]
@@ -175,4 +178,40 @@ func _parseAttilaJson(jsonContent):
 					sprites.append(sprite)
 				atlas["width"] = 0
 				atlas["height"] = 0
+	return atlas
+
+func _parseKenneySpritsheet(xmlContent):
+	"""
+	Parse Atlas from XML content which is exported with TexturePacker as "XML(generic)"
+	"""
+	var atlas = null
+	var sprites = []
+	var xmlParser = XMLParser.new()
+	if OK == xmlParser.open_buffer(xmlContent.to_utf8()):
+		var err = xmlParser.read()
+		if err == OK:
+			atlas = {}
+			atlas["sprites"] = sprites
+		while(err != ERR_FILE_EOF):
+			if xmlParser.get_node_type() == xmlParser.NODE_ELEMENT:
+				if xmlParser.get_node_name() == "TextureAtlas":
+					atlas["imagePath"] = xmlParser.get_named_attribute_value("imagePath")
+					# atlas["width"] = xmlParser.get_named_attribute_value("width")
+					# atlas["height"] = xmlParser.get_named_attribute_value("height")
+				elif xmlParser.get_node_name() == "SubTexture":
+					var sprite = {}
+					sprite["name"] = xmlParser.get_named_attribute_value("name")
+					sprite["x"] = xmlParser.get_named_attribute_value("x")
+					sprite["y"] = xmlParser.get_named_attribute_value("y")
+					sprite["width"] = xmlParser.get_named_attribute_value("width")
+					sprite["height"] = xmlParser.get_named_attribute_value("height")
+					sprite["pivotX"] = 0
+					sprite["pivotY"] = 0
+					sprite["orignX"] = 0.0
+					sprite["orignY"] = 0.0
+					sprite["orignWidth"] = 0.0
+					sprite["orignHeight"] = 0.0
+					sprite["rotation"] = 0
+					sprites.append(sprite)
+			err = xmlParser.read()
 	return atlas
