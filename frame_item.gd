@@ -1,13 +1,13 @@
 tool
 extends Panel
 
+var title = "" setget _set_title
+var frame_meta = null setget _setFrameMeta
+var texture = null setget _setTexture
+
 func _set_title(text):
 	get_node("HBox/Title").set_text(text)
 	title = text
-
-func _selectChanged(toggled):
-	selected = toggled
-	get_node("HBox/CheckBox").set_pressed(toggled)
 
 func _setFrameMeta(frame):
 	frame_meta = frame
@@ -27,11 +27,6 @@ func invalidate():
 		get_node("HBox/Icon/Sprite").set_texture(null)
 	update()
 
-var title = "" setget _set_title
-var selected  = false setget _selectChanged
-var frame_meta = null setget _setFrameMeta
-var texture = null setget _setTexture
-
 func _set_icon(tex, region, rotation):
 	var sprite = get_node("HBox/Icon/Sprite")
 	sprite.set_texture(tex)
@@ -48,7 +43,5 @@ func _set_icon(tex, region, rotation):
 	sprite.update()
 
 func _ready():
-	self.selected = false
 	self.texture = null
 	self.title = ""
-	get_node("HBox/CheckBox").connect("toggled", self, "_selectChanged")

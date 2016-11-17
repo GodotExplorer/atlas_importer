@@ -25,24 +25,9 @@ func _ready():
 	dialog.get_node("Input/Source/MetaFileField").connect("text_changed", self, "_checkPath")
 	dialog.get_node("Input/Type/TypeButton").connect("item_selected", self, "_typeSelected")
 	dialog.get_node("Input/Type/TypeButton").select(0)
-	dialog.get_node("Preview/SelAll").connect("pressed", self, "_toggleAll")
-	dialog.get_node("Preview/Clear").connect("pressed", self, "_untoggleAll")
-	dialog.get_node("Preview/Inverse").connect("pressed", self, "_toggleInverse")
 	dialog.connect("confirmed", self, "_confirmed")
 	dialog.set_pos(Vector2(get_viewport_rect().size.width/2 - dialog.get_rect().size.width/2, get_viewport_rect().size.height/2 - dialog.get_rect().size.height/2))
 	# dialog.show()
-
-func _toggleAll():
-	for item in listbox.get_children():
-		item.selected = true
-
-func _untoggleAll():
-	for item in listbox.get_children():
-		item.selected = false
-
-func _toggleInverse():
-	for item in listbox.get_children():
-		item.selected = !item.selected
 
 func _typeSelected(id):
 	_checkPath("")
@@ -101,8 +86,6 @@ func _getFileName(path):
 	if dotPos != -1:
 		fileName = fileName.substr(0,dotPos)
 	return fileName
-
-
 
 func _checkPath(path):
 	# Clear preview list
@@ -170,7 +153,6 @@ func import(path, meta):
 	ResourceSaver.save(path, tex)
 	
 	var tarDir = _getParentDir(path)
-	var sprites = meta.get_option("sprites")
 	
 	# Remove exsits atexs
 	var dir = Directory.new()
@@ -185,18 +167,17 @@ func import(path, meta):
 			f = dir.get_next()
 	
 	for s in atlas.sprites:
-		if sprites.find(s.name) != -1:
-			var atex = AtlasTexture.new()
-			var ap = str(tarDir, "/", _getFileName(path), ".", _getFileName(s.name),".atex")
-			if not ResourceLoader.has(ap):
-				atex.set_path(ap)
-			else:
-				atex.take_over_path(ap)
+		var atex = AtlasTexture.new()
+		var ap = str(tarDir, "/", _getFileName(path), ".", _getFileName(s.name),".atex")
+		if not ResourceLoader.has(ap):
 			atex.set_path(ap)
-			atex.set_name(_getFileName(s.name))
-			atex.set_atlas(tex)
-			atex.set_region(s.region)
-			ResourceSaver.save(ap, atex)
+		else:
+			atex.take_over_path(ap)
+		atex.set_path(ap)
+		atex.set_name(_getFileName(s.name))
+		atex.set_atlas(tex)
+		atex.set_region(s.region)
+		ResourceSaver.save(ap, atex)
 
 func _confirmed():
 	var err = dialog.get_node("Status").get_text()
@@ -208,15 +189,6 @@ func _confirmed():
 		meta.add_source(inpath)
 		meta.set_option("format", dialog.get_node("Input/Type/TypeButton").get_selected_ID())
 		meta.set_option("selectIndex", dialog.get_node("Input/Type/TypeButton").get_selected())
-		
-		var atlas = _loadAtlas(meta.get_source_path(0), meta.get_option("format"))
-		if listbox.get_child_count() > 0:
-			var selectedSprites = []
-			for i in range(listbox.get_child_count()):
-				if listbox.get_child(i).selected:
-					selectedSprites.append(atlas.sprites[i].name)
-			meta.set_option("sprites", selectedSprites)
-		
 		emit_signal("confim_import", outpath, meta)
 		dialog.hide()
 	else:
@@ -236,10 +208,4 @@ func showDialog(from):
 		dialog.get_node("Input/Target/TargetDirField").set_text("")
 		dialog.get_node("Input/Type/TypeButton").select(0)
 	_checkPath("")
-	# Select
-	if meta and listbox.get_child_count() > 0:
-		var selectedSprites = meta.get_option("sprites")
-		for i in range(listbox.get_child_count()):
-			if selectedSprites.find(listbox.get_child(i).title) != -1:
-				listbox.get_child(i).selected = true
 	dialog.popup()
