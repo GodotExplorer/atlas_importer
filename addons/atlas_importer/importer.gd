@@ -24,6 +24,8 @@ func _ready():
 	dialog.get_node("Input/Target/TargetDirField").connect("text_changed", self, "_checkPath")
 	dialog.get_node("Input/Source/MetaFileField").connect("text_changed", self, "_checkPath")
 	dialog.get_node("Input/Type/TypeButton").connect("item_selected", self, "_typeSelected")
+	dialog.get_node("Input/Compress/TypeButton").connect("item_selected", self, "_typeSelected")
+	dialog.get_node("Input/Compress/Quality/Slider").connect("value_changed", self, "_changeQuality")
 	dialog.get_node("Input/Type/TypeButton").select(0)
 	dialog.connect("confirmed", self, "_confirmed")
 	dialog.set_pos(Vector2(get_viewport_rect().size.width/2 - dialog.get_rect().size.width/2, get_viewport_rect().size.height/2 - dialog.get_rect().size.height/2))
@@ -31,6 +33,9 @@ func _ready():
 
 func _typeSelected(id):
 	_checkPath("")
+
+func _changeQuality(value):
+	get_node("Dialog/Input/Compress/Quality/Value").set_text(str(value))
 
 func _showFileDialog():
 	fileDialog.set_custom_minimum_size(dialog.get_size() - Vector2(50, 50))
@@ -93,6 +98,13 @@ func _checkPath(path):
 		listbox.remove_child(c)
 	listbox.update()
 	
+	# Show/Hide qulity controls
+	var quality_node = get_node("Dialog/Input/Compress/Quality")
+	if get_node("Dialog/Input/Compress/TypeButton").get_selected() == ImageTexture.STORAGE_COMPRESS_LOSSY:
+		quality_node.show()
+	else:
+		quality_node.hide()
+	
 	# Check input file
 	var file = File.new()
 	var inpath = dialog.get_node("Input/Source/MetaFileField").get_text()
@@ -150,6 +162,10 @@ func import(path, meta):
 	else:
 		tex.take_over_path(path)
 	tex.set_name(path)
+	var compression = meta.get_option("compressIndex")
+	tex.set_storage(compression)
+	if compression == ImageTexture.STORAGE_COMPRESS_LOSSY:
+		tex.set_lossy_storage_quality(meta.get_option("compressQuality"))
 	ResourceSaver.save(path, tex)
 	
 	var tarDir = _getParentDir(path)
@@ -189,6 +205,8 @@ func _confirmed():
 		meta.add_source(inpath)
 		meta.set_option("format", dialog.get_node("Input/Type/TypeButton").get_selected_ID())
 		meta.set_option("selectIndex", dialog.get_node("Input/Type/TypeButton").get_selected())
+		meta.set_option("compressIndex", dialog.get_node("Input/Compress/TypeButton").get_selected())
+		meta.set_option("compressQuality", float(dialog.get_node("Input/Compress/Quality/Value").get_text()))
 		emit_signal("confim_import", outpath, meta)
 		dialog.hide()
 	else:
@@ -203,9 +221,13 @@ func showDialog(from):
 	if meta:
 		dialog.get_node("Input/Source/MetaFileField").set_text(meta.get_source_path(0))
 		dialog.get_node("Input/Type/TypeButton").select(meta.get_option("selectIndex"))
+		dialog.get_node("Input/Compress/TypeButton").select(meta.get_option("compressIndex"))
+		dialog.get_node("Input/Compress/Quality/Value").set_text(str(meta.get_option("compressQuality")))
 	else:
 		dialog.get_node("Input/Source/MetaFileField").set_text("")
 		dialog.get_node("Input/Target/TargetDirField").set_text("")
 		dialog.get_node("Input/Type/TypeButton").select(0)
+		dialog.get_node("Input/Compress/TypeButton").select(0)
+		dialog.get_node("Input/Compress/Quality/Value").set_text("1.0")
 	_checkPath("")
 	dialog.popup()
