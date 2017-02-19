@@ -38,7 +38,7 @@ class ImportPlugin extends EditorImportPlugin:
 		return "com.geequlim.gdplugin.atlas.importer"
 
 	func get_visible_name():
-		return "2D Atals from other tools"
+		return "2D Atlas from other tools"
 
 	func import_dialog(from):
 		emit_signal("show_import_dialog",from)
