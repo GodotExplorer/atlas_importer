@@ -131,7 +131,7 @@ func _loadAtlas(metaPath, format):
 	return atlas
 
 func _loadAtlasTex(metaPath, atlas):
-	var path = str(_getParentDir(metaPath), "/", atlas.imagePath)
+	var path = Globals.globalize_path(str(_getParentDir(metaPath), "/", atlas.imagePath))
 	var tex = null
 	if ResourceLoader.has(path):
 		tex = ResourceLoader.load(path)
